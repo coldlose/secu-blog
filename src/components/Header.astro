@@ -1,10 +1,14 @@
 ---
-import { NAV } from '../config';
+import { NAV, SITE } from '../config';
 const { current } = Astro.props as { current?: string };
 ---
 
 <header class="site-header">
   <div class="inner">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">{SITE.title}</span>
+    </a>
     <nav class="nav">
       {
         NAV.map((item) => (

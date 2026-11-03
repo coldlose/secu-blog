@@ -1,94 +1,184 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getPosts, formatDateKo } from '../utils/posts';
+import { getPosts, formatDateKo, pad } from '../utils/posts';
 import { CATEGORIES } from '../config';
 
 const posts = await getPosts();
+const total = posts.length;
+const featured = posts[0]; // 최신 글
 
-// 카테고리별 개수 (글이 있는 카테고리만 탭으로 노출)
-const counts = new Map<string, number>();
-for (const p of posts) {
-  counts.set(p.data.category, (counts.get(p.data.category) ?? 0) + 1);
-}
-const tabs = [
-  { key: 'all', label: 'ALL', n: posts.length },
-  ...CATEGORIES.filter((c) => counts.has(c)).map((c) => ({
-    key: c,
-    label: c,
-    n: counts.get(c) ?? 0,
-  })),
-];
+// "Gwangju, South Korea" → "GWANGJU, KR"
+const locShort = 'GWANGJU, KR';
+
+// 카테고리 필터 (전체 + 모든 카테고리 항상 노출)
+const tabs = [{ key: 'all', label: 'All' }, ...CATEGORIES.map((c) => ({ key: c, label: c }))];
 ---
 
 <BaseLayout current="/">
-  <section class="page-head">
-    <h1>Blog</h1>
+  <div class="archive-eyebrow">
+    <span>PERSONAL ARCHIVE</span>
+    <span>{locShort}</span>
+  </div>
 
-    <div class="filters" id="filters">
-      {
-        tabs.map((t) => (
-          <button data-cat={t.key} aria-pressed={t.key === 'all' ? 'true' : 'false'}>
-            {t.label}
-            <span class="n">({t.n})</span>
-          </button>
-        ))
-      }
-    </div>
+  <section class="blog-hero">
+    <h1>Blog</h1>
+    <a class="to-list" href="#notes">글 목록 보기 <span aria-hidden="true">↓</span></a>
   </section>
 
-  <hr class="rule" />
+  {
+    featured && (
+      <section class="featured">
+        <div class="feat-label">
+          <span>LATEST NOTE</span>
+          <span>{formatDateKo(featured.data.date)}</span>
+        </div>
 
-  <ul class="post-list" id="list">
-    {
-      posts.map((p) => (
-        <li
-          class="post-row"
-          data-cat={p.data.category}
-        >
-          <a href={`/posts/${p.id}/`}>
-            <span class="body">
-              <span class="cat">{p.data.category}</span>
-              <span class="t">{p.data.title}</span>
+        <a class="feat-card" href={`/posts/${featured.id}/`}>
+          <div class="feat-date">
+            <svg class="radar" viewBox="0 0 200 200" aria-hidden="true">
+              <circle cx="100" cy="100" r="30" />
+              <circle cx="100" cy="100" r="58" />
+              <circle cx="100" cy="100" r="86" />
+              <line x1="100" y1="6" x2="100" y2="194" />
+              <line x1="6" y1="100" x2="194" y2="100" />
+            </svg>
+            <span class="dd">{pad(featured.data.date.getDate())}</span>
+            <span class="slash">/</span>
+            <span class="mm">{pad(featured.data.date.getMonth() + 1)}</span>
+          </div>
+
+          <div class="feat-body">
+            <p class="feat-meta">
+              {featured.data.category} · {featured.readingMinutes} MIN READ
+            </p>
+            <h2 class="feat-title">{featured.data.title}</h2>
+            {featured.data.description && <p class="feat-desc">{featured.data.description}</p>}
+            <span class="feat-more">
+              Read note <span aria-hidden="true">↗</span>
             </span>
-            <span class="date">{formatDateKo(p.data.date)}</span>
-          </a>
-        </li>
-      ))
-    }
-  </ul>
-  <p class="empty" id="empty" hidden>글이 없습니다.</p>
+          </div>
+        </a>
+      </section>
+    )
+  }
 
-  <nav class="pager" aria-label="pagination">
-    <span class="disabled" aria-hidden="true">‹</span>
-    <span class="current">1</span>
-    <span class="disabled" aria-hidden="true">›</span>
-  </nav>
+  <section class="notes" id="notes">
+    <h2 class="section-title"><span class="idx">02</span> All notes</h2>
+
+    <div class="notes-toolbar">
+      <label class="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+        </svg>
+        <input id="search" type="search" placeholder="Search notes" autocomplete="off" />
+      </label>
+
+      <div class="filters" id="filters">
+        {
+          tabs.map((t) => (
+            <button data-cat={t.key} aria-pressed={t.key === 'all' ? 'true' : 'false'}>
+              {t.label}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    {
+      total > 0 ? (
+        <div class="table">
+          <div class="thead">
+            <span class="c-no">NO.</span>
+            <span class="c-article">ARTICLE</span>
+            <span class="c-date">DATE</span>
+            <span class="c-arrow" />
+          </div>
+          <ul class="tbody" id="list">
+            {posts.map((p) => (
+              <li
+                class="note-row"
+                data-cat={p.data.category}
+                data-text={`${p.data.title} ${p.data.description ?? ''} ${p.data.category}`.toLowerCase()}
+              >
+                <a href={`/posts/${p.id}/`}>
+                  <span class="c-no">{pad(p.number)}</span>
+                  <span class="c-article">
+                    <span class="cat">{p.data.category}</span>
+                    <span class="t">{p.data.title}</span>
+                    {p.data.description && <span class="d">{p.data.description}</span>}
+                  </span>
+                  <span class="c-date">{formatDateKo(p.data.date)}</span>
+                  <span class="c-arrow" aria-hidden="true">
+                    ↗
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p class="empty" id="empty" hidden>
+            검색 결과가 없습니다.
+          </p>
+
+          <nav class="pager" aria-label="pagination">
+            <span class="prev disabled">← Previous</span>
+            <span class="nums">
+              <span class="current">1</span>
+            </span>
+            <span class="next disabled">Next →</span>
+          </nav>
+        </div>
+      ) : (
+        <div class="table">
+          <div class="thead">
+            <span class="c-no">NO.</span>
+            <span class="c-article">ARTICLE</span>
+            <span class="c-date">DATE</span>
+            <span class="c-arrow" />
+          </div>
+          <p class="empty-first">
+            아직 글이 없어요. <br />
+            <span>/admin 에서 첫 글을 써보세요.</span>
+          </p>
+        </div>
+      )
+    }
+  </section>
 </BaseLayout>
 
 <script>
-  const filters = document.getElementById('filters')!;
-  const rows = Array.from(document.querySelectorAll<HTMLElement>('.post-row'));
-  const empty = document.getElementById('empty')!;
+  const filtersEl = document.getElementById('filters');
+  const searchEl = document.getElementById('search') as HTMLInputElement | null;
+  const rows = Array.from(document.querySelectorAll<HTMLElement>('.note-row'));
+  const empty = document.getElementById('empty');
 
   let activeCat = 'all';
+  let query = '';
 
   function apply() {
     let shown = 0;
     for (const row of rows) {
-      const visible = activeCat === 'all' || row.dataset.cat === activeCat;
+      const catOk = activeCat === 'all' || row.dataset.cat === activeCat;
+      const textOk = query === '' || (row.dataset.text ?? '').includes(query);
+      const visible = catOk && textOk;
       row.hidden = !visible;
       if (visible) shown++;
     }
-    empty.hidden = shown !== 0;
+    if (empty) empty.hidden = shown !== 0;
   }
 
-  filters.addEventListener('click', (e) => {
+  filtersEl?.addEventListener('click', (e) => {
     const btn = (e.target as HTMLElement).closest('button');
     if (!btn) return;
     activeCat = btn.dataset.cat ?? 'all';
-    filters
+    filtersEl
       .querySelectorAll('button')
       .forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+    apply();
+  });
+
+  searchEl?.addEventListener('input', () => {
+    query = searchEl.value.trim().toLowerCase();
     apply();
   });
 </script>
