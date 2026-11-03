@@ -5,7 +5,7 @@
 # ▶ branch 는 기본 브랜치(보통 main)로 맞추세요.
 backend:
   name: github
-  repo: USERNAME/REPO      # ← 여기를 본인 저장소로 변경
+  repo: coldlose/secu-blog
   branch: main
 
 # 로컬에서 테스트할 때만 주석 해제 (npx @sveltia/cms-proxy-server 실행 필요)
