@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPosts, formatDateKo } from '../utils/posts';
+import { CATEGORIES } from '../config';
+
+const posts = await getPosts();
+
+// 카테고리별 개수 (글이 있는 카테고리만 탭으로 노출)
+const counts = new Map<string, number>();
+for (const p of posts) {
+  counts.set(p.data.category, (counts.get(p.data.category) ?? 0) + 1);
+}
+const tabs = [
+  { key: 'all', label: 'ALL', n: posts.length },
+  ...CATEGORIES.filter((c) => counts.has(c)).map((c) => ({
+    key: c,
+    label: c,
+    n: counts.get(c) ?? 0,
+  })),
+];
+---
+
+<BaseLayout current="/">
+  <section class="page-head">
+    <h1>Blog</h1>
+
+    <div class="filters" id="filters">
+      {
+        tabs.map((t) => (
+          <button data-cat={t.key} aria-pressed={t.key === 'all' ? 'true' : 'false'}>
+            {t.label}
+            <span class="n">({t.n})</span>
+          </button>
+        ))
+      }
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <ul class="post-list" id="list">
+    {
+      posts.map((p) => (
+        <li
+          class="post-row"
+          data-cat={p.data.category}
+        >
+          <a href={`/posts/${p.id}/`}>
+            <span class="body">
+              <span class="cat">{p.data.category}</span>
+              <span class="t">{p.data.title}</span>
+            </span>
+            <span class="date">{formatDateKo(p.data.date)}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <p class="empty" id="empty" hidden>글이 없습니다.</p>
+
+  <nav class="pager" aria-label="pagination">
+    <span class="disabled" aria-hidden="true">‹</span>
+    <span class="current">1</span>
+    <span class="disabled" aria-hidden="true">›</span>
+  </nav>
+</BaseLayout>
+
+<script>
+  const filters = document.getElementById('filters')!;
+  const rows = Array.from(document.querySelectorAll<HTMLElement>('.post-row'));
+  const empty = document.getElementById('empty')!;
+
+  let activeCat = 'all';
+
+  function apply() {
+    let shown = 0;
+    for (const row of rows) {
+      const visible = activeCat === 'all' || row.dataset.cat === activeCat;
+      row.hidden = !visible;
+      if (visible) shown++;
+    }
+    empty.hidden = shown !== 0;
+  }
+
+  filters.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest('button');
+    if (!btn) return;
+    activeCat = btn.dataset.cat ?? 'all';
+    filters
+      .querySelectorAll('button')
+      .forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+    apply();
+  });
+</script>

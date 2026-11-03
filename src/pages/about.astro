@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { AUTHOR } from '../config';
+
+// 아래 배열만 수정하면 About 페이지 전체가 갱신됩니다.
+const awards = [
+  { when: '2026.10', main: '제12회 AI·정보보호영재교육원 정보보안 경진대회 장려상', by: '개인전 영재교육원장상 · 단체전 협의회장상' },
+  { when: '2026.08', main: '전국기능경기대회 사이버보안 직종 은메달', by: '국제기능올림픽대회 한국위원회 회장상' },
+  { when: '2026.08', main: '호남 청소년 해킹캠프 우수상', by: '한국콘텐츠진흥원장상' },
+  { when: '2026.04', main: '지방기능경기대회 사이버보안 직종 금메달', by: '광주광역시 기능경기위원회 위원장상' },
+];
+
+const certificates = [
+  { when: '2026.06', main: '정보기기운용기능사', by: '한국산업인력공단' },
+  { when: '2026.01', main: '리눅스마스터 2급', by: '한국정보통신진흥협회' },
+  { when: '2025.12', main: '네트워크관리사 2급', by: '한국정보통신자격협회' },
+];
+
+const activities = [
+  { when: '2026', main: '목포대학교 정보보호영재교육원 전문 과정 수료 예정', by: '' },
+  { when: '2026', main: '광주·공주 소프트웨어마이스터고 기능경기 친선전 사이버보안 직종 참가', by: '' },
+];
+
+const education = [
+  { when: '', main: '광주소프트웨어마이스터고등학교 스마트 IoT과', by: '2025.03 ~ 2027.01 · 졸업예정' },
+];
+
+const blocks = [
+  { title: 'Awards', sub: '· 수상', items: awards },
+  { title: 'Certificates', sub: '· 자격증', items: certificates },
+  { title: 'Activities', sub: '· 활동', items: activities },
+  { title: 'Education', sub: '· 학력', items: education },
+];
+---
+
+<BaseLayout title="About" current="/about">
+  <section class="page-head">
+    <h1>About</h1>
+  </section>
+
+  <hr class="rule" />
+
+  <div class="profile">
+    <img
+      class="p-photo"
+      src="/images/profile.png"
+      alt={`${AUTHOR.name} 프로필`}
+      width="148"
+      height="148"
+    />
+
+    <div class="p-intro">
+      <p class="eyebrow">{AUTHOR.role}</p>
+      <div class="p-name">이찬진 <span>Lee ChanJin</span></div>
+      <p class="p-bio">{AUTHOR.bio}<br />{AUTHOR.field}</p>
+    </div>
+
+    <div class="p-contact">
+      <div class="row">
+        <span class="k">EMAIL</span>
+        <a class="v" href={`mailto:${AUTHOR.email}`}>{AUTHOR.email}</a>
+      </div>
+      <div class="row">
+        <span class="k">GITHUB</span>
+        <a class="v" href={AUTHOR.github} target="_blank" rel="noopener">{AUTHOR.githubLabel}</a>
+      </div>
+      <div class="row">
+        <span class="k">LOCATION</span>
+        <span class="v plain">{AUTHOR.location}</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="rule" style="margin-top: 40px" />
+
+  {
+    blocks.map((block) => (
+      <section class="about-block">
+        <h2>
+          {block.title} <span class="sub-inline">{block.sub}</span>
+        </h2>
+        <ul class="timeline">
+          {block.items.map((item) => (
+            <li class={item.when ? undefined : 'no-date'}>
+              {item.when && <span class="when">{item.when}</span>}
+              <span class="what">
+                <span class="main">{item.main}</span>
+                {item.by && <span class="by">{item.by}</span>}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</BaseLayout>

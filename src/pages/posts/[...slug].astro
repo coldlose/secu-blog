@@ -1,0 +1,39 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPosts, formatDateKo, pad } from '../../utils/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<BaseLayout title={post.data.title} description={post.data.description} current="/">
+  <article class="article">
+    <div class="article-head">
+      <a class="back" href="/">← 모든 글</a>
+      <div class="meta">
+        <span class="cat">{post.data.category}</span>
+        <span>·</span>
+        <span>No. {pad(post.number)}</span>
+        <span>·</span>
+        <span>{formatDateKo(post.data.date)}</span>
+        <span>·</span>
+        <span>{post.readingMinutes} MIN READ</span>
+      </div>
+      <h1>{post.data.title}</h1>
+      {post.data.description && <p class="desc">{post.data.description}</p>}
+    </div>
+
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

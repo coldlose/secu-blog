@@ -1,0 +1,50 @@
+# Sveltia CMS 설정 — 글 관리자(/admin)
+#
+# ▶ repo 를 본인 GitHub 저장소로 바꾸세요: "GitHub아이디/저장소이름"
+#   예) repo: coldlose/secu-blog
+# ▶ branch 는 기본 브랜치(보통 main)로 맞추세요.
+backend:
+  name: github
+  repo: USERNAME/REPO      # ← 여기를 본인 저장소로 변경
+  branch: main
+
+# 로컬에서 테스트할 때만 주석 해제 (npx @sveltia/cms-proxy-server 실행 필요)
+# local_backend: true
+
+# 이미지 업로드 위치
+media_folder: public/images/uploads
+public_folder: /images/uploads
+
+collections:
+  - name: posts
+    label: 글
+    label_singular: 글
+    description: 블로그 글을 작성/수정합니다.
+    folder: src/content/posts
+    create: true
+    extension: md
+    format: frontmatter
+    # 파일명(=주소) : 작성일 + 제목 기반
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    preview_path: "posts/{{slug}}"
+    sortable_fields: [date, title]
+    fields:
+      - { name: title, label: 제목, widget: string }
+      - {
+          name: date,
+          label: 날짜,
+          widget: datetime,
+          date_format: "YYYY-MM-DD",
+          time_format: false,
+          format: "YYYY-MM-DD",
+        }
+      - {
+          name: category,
+          label: 카테고리,
+          widget: select,
+          options: [Memory, Study, CTF, Bugbounty, Analysis],
+          default: Study,
+        }
+      - { name: description, label: 설명(한 줄), widget: string, required: false }
+      - { name: draft, label: 초안으로 숨기기, widget: boolean, default: false, required: false }
+      - { name: body, label: 본문, widget: markdown }

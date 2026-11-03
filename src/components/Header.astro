@@ -1,0 +1,18 @@
+---
+import { NAV } from '../config';
+const { current } = Astro.props as { current?: string };
+---
+
+<header class="site-header">
+  <div class="inner">
+    <nav class="nav">
+      {
+        NAV.map((item) => (
+          <a href={item.href} aria-current={current === item.href ? 'page' : undefined}>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>

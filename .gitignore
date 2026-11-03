@@ -1,0 +1,17 @@
+# build output
+dist/
+# dependencies
+node_modules/
+# astro generated
+.astro/
+# environment
+.env
+.env.production
+# macOS
+.DS_Store
+# logs
+npm-debug.log*
+# editor
+.vscode/
+# claude code session config (machine-specific paths)
+.claude/
