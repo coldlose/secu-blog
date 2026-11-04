@@ -28,9 +28,9 @@ collections:
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     preview_path: "posts/{{slug}}"
     sortable_fields: [date, title]
-    # 글쓰기 화면의 미리보기 창 끄기 (실제 블로그 디자인과 다른 투박한 미리보기라 숨김)
+    # 미리보기 창 켜기 (index.html에서 실제 블로그 디자인에 맞춘 커스텀 미리보기를 등록함)
     editor:
-      preview: false
+      preview: true
     fields:
       - { name: title, label: 제목, widget: string }
       - {
