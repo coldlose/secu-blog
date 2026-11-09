@@ -815,12 +815,25 @@ a {
 }
 
 .about-block > h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
   font-size: 13px;
-  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-dim);
   margin: 0 0 28px;
   font-weight: 700;
+}
+
+/* 영문 제목: 글자 간격은 여기에만. 마지막 글자 뒤 꼬리 여백을 음수 마진으로 상쇄해 점이 양옆 균등하게 보이도록 */
+.about-block > h2 .t-en {
+  letter-spacing: 0.14em;
+  margin-right: -0.14em;
+}
+
+.about-block > h2 .sep {
+  color: var(--text-faint);
+  font-weight: 400;
 }
 
 .about-block > h2 .sub-inline {
@@ -828,7 +841,7 @@ a {
   font-size: 12px;
   letter-spacing: 0.04em;
   font-weight: 400;
-  margin-left: 2px;
+  text-transform: none;
 }
 
 .timeline {

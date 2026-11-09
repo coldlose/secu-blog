@@ -26,10 +26,10 @@ const education = [
 ];
 
 const blocks = [
-  { title: 'Awards', sub: '· 수상', items: awards },
-  { title: 'Certificates', sub: '· 자격증', items: certificates },
-  { title: 'Activities', sub: '· 활동', items: activities },
-  { title: 'Education', sub: '· 학력', items: education },
+  { title: 'Awards', sub: '수상', items: awards },
+  { title: 'Certificates', sub: '자격증', items: certificates },
+  { title: 'Activities', sub: '활동', items: activities },
+  { title: 'Education', sub: '학력', items: education },
 ];
 ---
 
@@ -77,7 +77,9 @@ const blocks = [
     blocks.map((block) => (
       <section class="about-block">
         <h2>
-          {block.title} <span class="sub-inline">{block.sub}</span>
+          <span class="t-en">{block.title}</span>
+          <span class="sep">·</span>
+          <span class="sub-inline">{block.sub}</span>
         </h2>
         <ul class="timeline">
           {block.items.map((item) => (
