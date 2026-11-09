@@ -811,7 +811,7 @@ a {
 
 /* ---------- about: sections ---------- */
 .about-block {
-  margin-top: 44px;
+  margin-top: 64px;
 }
 
 .about-block > h2 {
@@ -819,7 +819,7 @@ a {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-dim);
-  margin: 0 0 18px;
+  margin: 0 0 28px;
   font-weight: 700;
 }
 
@@ -828,7 +828,7 @@ a {
   font-size: 12px;
   letter-spacing: 0.04em;
   font-weight: 400;
-  margin-left: 6px;
+  margin-left: 2px;
 }
 
 .timeline {
@@ -841,7 +841,7 @@ a {
   display: grid;
   grid-template-columns: 80px 1fr;
   gap: 18px;
-  padding: 14px 0;
+  padding: 20px 0;
   border-top: 1px solid var(--border-soft);
 }
 
