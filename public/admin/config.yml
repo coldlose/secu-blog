@@ -51,3 +51,49 @@ collections:
       - { name: description, label: 설명(한 줄), widget: string, required: false }
       - { name: draft, label: 초안으로 숨기기, widget: boolean, default: false, required: false }
       - { name: body, label: 본문, widget: markdown }
+
+  # About 페이지 내용 (수상·자격증·활동·학력) — 코드 수정 없이 /admin에서 편집
+  - name: about
+    label: About 페이지
+    description: About 페이지의 수상·자격증·활동·학력을 추가/수정합니다.
+    files:
+      - name: about
+        label: About 내용
+        file: src/data/about.json
+        fields:
+          - name: awards
+            label: 수상
+            label_singular: 수상
+            widget: list
+            summary: "{{fields.when}}  {{fields.main}}"
+            fields:
+              - { name: when, label: 날짜, widget: string, required: false, hint: "예) 2026.10 (비워도 됨)" }
+              - { name: main, label: 제목, widget: string }
+              - { name: by, label: 부가 설명, widget: string, required: false }
+          - name: certificates
+            label: 자격증
+            label_singular: 자격증
+            widget: list
+            summary: "{{fields.when}}  {{fields.main}}"
+            fields:
+              - { name: when, label: 날짜, widget: string, required: false }
+              - { name: main, label: 제목, widget: string }
+              - { name: by, label: 부가 설명, widget: string, required: false }
+          - name: activities
+            label: 활동
+            label_singular: 활동
+            widget: list
+            summary: "{{fields.when}}  {{fields.main}}"
+            fields:
+              - { name: when, label: 날짜, widget: string, required: false }
+              - { name: main, label: 제목, widget: string }
+              - { name: by, label: 부가 설명, widget: string, required: false }
+          - name: education
+            label: 학력
+            label_singular: 학력
+            widget: list
+            summary: "{{fields.main}}"
+            fields:
+              - { name: when, label: 날짜, widget: string, required: false }
+              - { name: main, label: 학교·학과, widget: string }
+              - { name: by, label: 기간·상태, widget: string, required: false }
